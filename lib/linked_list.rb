@@ -1,6 +1,3 @@
-# TODO write unit tests
-
-
 class Node
   attr_accessor :value, :next
 
@@ -8,9 +5,19 @@ class Node
     @value = value
     @next = nil
   end
+
+  def ==(other)
+    if other.is_a?(Node)
+      @value == other.value
+    else
+      @value == other
+    end
+  end
 end
 
 class LinkedList
+  include Enumerable
+
   attr_reader :size, :head, :tail
 
   def initialize
@@ -75,27 +82,24 @@ class LinkedList
 
   def each
     current = @head
-    i = 0
     while current != nil
-      yield(current.value, i)
+      yield(current.value)
       current = current.next
-      i += 1
     end
   end
 
   def contains?(valueToCheck)
-    each {|value| return true if value == valueToCheck}
+    each { |value| return true if value == valueToCheck }
     false
   end
 
   def find(valueToFind)
-    each {|value, index| return index if value == valueToFind}
+    each_with_index { |value, index| return index if value == valueToFind }
     nil
   end
 
   def to_s
-    result = ""
-    each {|value| result += "( #{value} ) -> "}
+    result = reduce("") {|res, value| res + "( #{value} ) -> "}
     result += "nil"
   end
 end
