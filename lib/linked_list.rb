@@ -53,9 +53,10 @@ class LinkedList
   end
 
   def at(index)
-    current = @head
-    i = 0
+    index = @size + index if index < 0
+    current = index >= 0 ? @head : nil
 
+    i = 0
     while i < index && current != nil
       current = current.next
       i += 1
@@ -81,6 +82,8 @@ class LinkedList
   end
 
   def insert_at(value, index)
+    index = validate_index(index)
+
     return prepend(value) if index == 0
     return append(value) if index == @size
 
@@ -94,6 +97,7 @@ class LinkedList
   end
 
   def remove_at(index)
+    index = validate_index(index)
     return pop if index == @size - 1
 
     if index == 0
@@ -130,5 +134,17 @@ class LinkedList
   def to_s
     result = reduce("") {|res, value| res + "( #{value} ) -> "}
     result += "nil"
+  end
+
+  private
+
+  def validate_index(index)
+    index = @size + index if index < 0
+
+    if index > @size
+      raise IndexError, "Index out of bounds, no node is pointing to it"
+    end
+
+    index
   end
 end

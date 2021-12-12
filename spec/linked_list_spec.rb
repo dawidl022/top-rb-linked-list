@@ -266,6 +266,20 @@ RSpec.describe LinkedList do
         expect(list.size).to eq(4)
       end
     end
+
+    describe "inserting at index out of bounds" do
+      it "raises an exception" do
+        expect { list.insert_at(5, 5) }.to raise_error(IndexError)
+      end
+    end
+
+    describe "inserting at negative index" do
+      before {list.insert_at(5, -1)}
+
+      it "counts from the end" do
+        expect(list.head.next.next.value).to eq(5)
+      end
+    end
   end
 
   describe "#remove_at" do
@@ -323,6 +337,31 @@ RSpec.describe LinkedList do
       it "correctly connects the nodes" do
         list.remove_at(1)
         expect(list.head.next.value).to eq(4)
+      end
+    end
+
+    describe "removing at index out of bounds" do
+      it "raises an exception" do
+        expect { list.remove_at(5) }.to raise_error(IndexError)
+      end
+    end
+
+    describe "removing at negative index counts from the end" do
+
+      it "returns the remove value" do
+        expect(list.remove_at(-2)).to eq(3)
+      end
+
+      describe "updates nodes" do
+        before {list.remove_at(-1)}
+
+        it "updates the tail" do
+          expect(list.tail.value).to eq(3)
+        end
+
+        it "correctly connects the nodes" do
+          expect(list.head.next.next).to be nil
+        end
       end
     end
   end
