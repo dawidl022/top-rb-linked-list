@@ -80,6 +80,35 @@ class LinkedList
     node.value
   end
 
+  def insert_at(value, index)
+    return prepend(value) if index == 0
+    return append(value) if index == @size
+
+    node = Node.new(value)
+    prev_node = at(index - 1)
+
+    node.next = prev_node.next
+    prev_node.next = node
+
+    @size += 1
+  end
+
+  def remove_at(index)
+    return pop if index == @size - 1
+
+    if index == 0
+      node = @head
+      @head = node.next
+    else
+      node = at(index)
+      prev_node = at(index - 1)
+      prev_node.next = node.next
+    end
+
+    @size -= 1
+    node.value
+  end
+
   def each
     current = @head
     while current != nil

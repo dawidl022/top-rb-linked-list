@@ -224,4 +224,106 @@ RSpec.describe LinkedList do
       expect(list.to_s).to eq("( 2 ) -> ( 3 ) -> ( 4 ) -> nil")
     end
   end
+
+  describe "#insert_at" do
+    before(&example_values)
+
+    describe "inserting at index of size works like append" do
+      before { list.insert_at(5, list.size) }
+
+      it "tail points to new node" do
+        expect(list.tail.value).to eq(5)
+      end
+
+      it "new node is properly connected" do
+        expect(list.head.next.next.next).to equal(list.tail)
+      end
+    end
+
+    describe "inserting at index 0 works like prepend" do
+      before { list.insert_at(1, 0) }
+
+      it "head points to new node" do
+        expect(list.head.value).to eq(1)
+      end
+
+      it "new node is properly connected" do
+        expect(list.head.next.value).to eq(2)
+      end
+    end
+
+    describe "inserting in middle" do
+      before { list.insert_at(10, 1) }
+
+      it "new node is connected properly" do
+        aggregate_failures do
+          expect(list.head.next.value).to eq(10)
+          expect(list.head.next.next.value).to eq(3)
+        end
+      end
+
+      it "size gets incremented" do
+        expect(list.size).to eq(4)
+      end
+    end
+  end
+
+  describe "#remove_at" do
+    before(&example_values)
+
+    describe "removing at end of list works like pop" do
+      it "returns removed element" do
+        expect(list.remove_at(list.size - 1)).to eq(4)
+      end
+
+      it "returns nil when no more elements to pop" do
+        3.times { list.remove_at(list.size - 1) }
+        expect(list.remove_at(list.size - 1)).to be nil
+      end
+
+      it "reassigns the tail" do
+        list.remove_at(list.size - 1)
+        expect(list.tail).to equal(list.head.next)
+      end
+
+      it "makes the new tail point to nil" do
+        list.remove_at(list.size - 1)
+        expect(list.tail.next).to be nil
+      end
+
+      it "decrements the list size" do
+        list.remove_at(list.size - 1)
+        expect(list.size).to eq(2)
+      end
+
+      it "removes head and tail when last element is popped" do
+        3.times { list.remove_at(list.size - 1) }
+        aggregate_failures do
+          expect(list.head).to be nil
+          expect(list.tail).to be nil
+        end
+      end
+    end
+
+    describe "removing at index 0" do
+      it "returns removed element" do
+        expect(list.remove_at(0)).to eq(2)
+      end
+
+      it "reassigns the head" do
+        expect(list.head.value).to eq(2)
+      end
+    end
+
+    describe "removing at middle index" do
+      it "returns removed element" do
+        expect(list.remove_at(1)).to eq(3)
+      end
+
+      it "correctly connects the nodes" do
+        list.remove_at(1)
+        expect(list.head.next.value).to eq(4)
+      end
+    end
+  end
 end
